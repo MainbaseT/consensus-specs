@@ -1,5 +1,5 @@
 # Rename the build stage from 'base' to 'builder' for clarification and code readability
-FROM python:3.11.0-slim-bullseye as builder
+FROM python:3.12.4-slim-bullseye as builder
 
 ENV DEBIAN_FRONTEND=noninteractive \
     WORKDIR=/consensus-specs  \
@@ -16,7 +16,4 @@ RUN apt update && ${INSTALL_CMD} && ${PIP_UPGRADE_CMD} && rm -rf /var/lib/apt/li
 COPY . .
 
 # Inline installation commands
-RUN make install_test && \
-    make preinstallation && \
-    make pyspec
-
+RUN make pyspec
