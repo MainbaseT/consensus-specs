@@ -1,13 +1,14 @@
 # Fork Choice -- Safe Block
 
 ## Table of contents
+
 <!-- TOC -->
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Introduction](#introduction)
 - [`get_safe_beacon_block_root`](#get_safe_beacon_block_root)
-- [`get_safe_execution_payload_hash`](#get_safe_execution_payload_hash)
+- [`get_safe_execution_block_hash`](#get_safe_execution_block_hash)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 <!-- /TOC -->
@@ -31,10 +32,10 @@ def get_safe_beacon_block_root(store: Store) -> Root:
 *Note*: Currently safe block algorithm simply returns `store.justified_checkpoint.root`
 and is meant to be improved in the future.
 
-## `get_safe_execution_payload_hash`
+## `get_safe_execution_block_hash`
 
 ```python
-def get_safe_execution_payload_hash(store: Store) -> Hash32:
+def get_safe_execution_block_hash(store: Store) -> Hash32:
     safe_block_root = get_safe_beacon_block_root(store)
     safe_block = store.blocks[safe_block_root]
 

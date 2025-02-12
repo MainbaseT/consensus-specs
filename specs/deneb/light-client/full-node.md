@@ -1,7 +1,5 @@
 # Deneb Light Client -- Full Node
 
-**Notice**: This document is a work-in-progress for researchers and implementers.
-
 ## Table of contents
 
 <!-- TOC -->
@@ -17,7 +15,7 @@
 
 ## Introduction
 
-This upgrade adds information about the execution payload to light client data as part of the Deneb upgrade.
+Execution payload data is updated to account for the Deneb upgrade.
 
 ## Helper functions
 

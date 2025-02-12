@@ -1,7 +1,5 @@
 # Altair Light Client -- Full Node
 
-**Notice**: This document is a work-in-progress for researchers and implementers.
-
 ## Table of contents
 
 <!-- TOC -->
@@ -76,7 +74,7 @@ def create_light_client_bootstrap(state: BeaconState,
         header=block_to_light_client_header(block),
         current_sync_committee=state.current_sync_committee,
         current_sync_committee_branch=CurrentSyncCommitteeBranch(
-            compute_merkle_proof(state, CURRENT_SYNC_COMMITTEE_GINDEX)),
+            compute_merkle_proof(state, current_sync_committee_gindex_at_slot(state.slot))),
     )
 ```
 
@@ -124,7 +122,7 @@ def create_light_client_update(state: BeaconState,
     if update_attested_period == update_signature_period:
         update.next_sync_committee = attested_state.next_sync_committee
         update.next_sync_committee_branch = NextSyncCommitteeBranch(
-            compute_merkle_proof(attested_state, NEXT_SYNC_COMMITTEE_GINDEX))
+            compute_merkle_proof(attested_state, next_sync_committee_gindex_at_slot(attested_state.slot)))
 
     # Indicate finality whenever possible
     if finalized_block is not None:
@@ -134,7 +132,7 @@ def create_light_client_update(state: BeaconState,
         else:
             assert attested_state.finalized_checkpoint.root == Bytes32()
         update.finality_branch = FinalityBranch(
-            compute_merkle_proof(attested_state, FINALIZED_ROOT_GINDEX))
+            compute_merkle_proof(attested_state, finalized_root_gindex_at_slot(attested_state.slot)))
 
     update.sync_aggregate = block.message.body.sync_aggregate
     update.signature_slot = block.message.slot
@@ -146,7 +144,7 @@ Full nodes SHOULD provide the best derivable `LightClientUpdate` (according to `
 
 - `LightClientUpdate` are assigned to sync committee periods based on their `attested_header.beacon.slot`
 - `LightClientUpdate` are only considered if `compute_sync_committee_period_at_slot(update.attested_header.beacon.slot) == compute_sync_committee_period_at_slot(update.signature_slot)`
-- Only `LightClientUpdate` with `next_sync_committee` as selected by fork choice are provided, regardless of ranking by `is_better_update`. To uniquely identify a non-finalized sync committee fork, all of `period`, `current_sync_committee` and `next_sync_committee` need to be incorporated, as sync committees may reappear over time.
+- Only `LightClientUpdate` with `sync_aggregate` from blocks on the canonical chain as selected by fork choice are considered, regardless of ranking by `is_better_update`. `LightClientUpdate` referring to orphaned blocks SHOULD NOT be provided.
 
 ### `create_light_client_finality_update`
 
